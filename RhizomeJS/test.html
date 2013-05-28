@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="Scripts/rhizome.js"></script>
+    
+    <script>
+        
+        var activeObject1 = {
+            i : 1,
+
+            step: function (host) {
+                console.log("1: step " + this.i);
+                host.sleep(1000);
+                this.i++;
+                if (this.i > 10)
+                    host.stop();
+            }
+        };
+
+        var activeObject2 = {
+            i : 1,
+
+            step: function (host) {
+                console.log("2: step " + this.i);
+                if (this.i % 2 == 0)
+                    host.sleep(1500);
+
+                this.i++;
+                if (this.i > 20)
+                    host.stop();
+            }
+        };
+
+        activeObjectHost.add(activeObject1);
+        activeObjectHost.add(activeObject2);
+        activeObjectHost.run();
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>
