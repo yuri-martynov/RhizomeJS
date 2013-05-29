@@ -1,5 +1,5 @@
-﻿function ActiveObjectHost () {
-    
+﻿function ActiveObjectHost() {
+
     var activeObjects = [];
 
     var add = function(activeObject) {
@@ -35,7 +35,7 @@
     }; // add
 
     this.add = function() {
-        for (var i in arguments) {
+        for (var i = 0; i < arguments.length; i++) {
             add(arguments[i]);
         }
     };
@@ -45,7 +45,7 @@
         while (activeObjects.length > 0) {
 
             var resumeDate = undefined;
-            for (var i in activeObjects) {
+            for (var i = 0; i < activeObjects.length; i++) {
                 if (activeObjects.length == 0) return; // todo: was stopped
 
                 var activeObject = activeObjects[i];

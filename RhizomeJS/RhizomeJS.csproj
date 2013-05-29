@@ -59,7 +59,6 @@
   <ItemGroup>
     <Content Include="automaton-test.html" />
     <Content Include="active-state-test.html" />
-    <Content Include="demo.html" />
     <Content Include="Scripts\active-state.js" />
     <Content Include="Scripts\ao-host.js" />
     <Content Include="Scripts\automaton.js" />

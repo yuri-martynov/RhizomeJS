@@ -17,7 +17,7 @@
     }
 
     function getStateById(id) {
-        for (var i in states) {
+        for (var i = 0; i < states.length; i++) {
             var s = states[i];
             if (s.id == id) return s;
         }
@@ -62,7 +62,7 @@
             return;
         }
 
-        for (var i in edges) {
+        for (var i = 0; i < edges.length; i++) {
             var targetState = edges[i].getTargetState(sourceState, event);
             if (targetState != null) {
                 console.info("before setState: %s + %s -> %s", sourceState, event, targetState);

@@ -1,80 +1,80 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title></title>
-    <script src="Scripts/ao-host.js"></script>
-    <script src="Scripts/automaton.js"></script>
-    <script src="Scripts/active-state.js"></script>
+    <head>
+        <title></title>
+        <script src="Scripts/ao-host.js"> </script>
+        <script src="Scripts/automaton.js"> </script>
+        <script src="Scripts/active-state.js"> </script>
     
-    <script>
+        <script>
 
         // STATE 1
-        var state1 = new ActiveState();
-        var ruleFactory1 = function(ctx) {
-            var rule = {
-                i: 1,
-                plant: undefined,
-                eventSink : undefined,
+            var state1 = new ActiveState();
+            var ruleFactory1 = function(ctx) {
+                var rule = {
+                    i: 1,
+                    plant: ctx.plant,
+                    eventSink: ctx.eventSink,
 
-                step: function (host) {
-                    console.log("ao 1: step " + this.i);
-                    this.i++;
+                    step: function(host) {
+                        console.log("ao 1: step " + this.i);
+                        this.i++;
 
-                    if (this.i > 14) {
-                        this.eventSink.castEvent("e1");
-                        return;
+                        if (this.i > 14) {
+                            this.eventSink.castEvent("e1");
+                            return;
+                        }
+
+                        if (this.i % 4 == 1)
+                            host.sleep(888);
                     }
-
-                    if (this.i % 4 == 1)
-                        host.sleep(888);
-                }
+                };
+                ctx.activeObjectHost().add(rule);
+                return rule;
             };
-            ctx.activeObjectHost().add(rule);
-            return rule;
-        };
-        state1.addRuleFactory(ruleFactory1);
-        state1.addRuleFactory(ruleFactory1);
-        
-        // STATE 2
-        var state2 = new ActiveState();
-        var ruleFactory2 = function (ctx) {
-            var rule = {
-                i: 1,
-                plant: undefined,
-                eventSink: undefined,
+            state1.addRuleFactory(ruleFactory1);
+            state1.addRuleFactory(ruleFactory1);
 
-                step: function (host) {
-                    console.log("ao 2: step " + this.i);
-                    this.i++;
+            // STATE 2
+            var state2 = new ActiveState();
+            var ruleFactory2 = function(ctx) {
+                var rule = {
+                    i: 1,
+                    plant: ctx.plant,
+                    eventSink: ctx.eventSink,
 
-                    if (this.i > 8) {
-                        this.eventSink.castEvent("e2");
-                        return;
+                    step: function(host) {
+                        console.log("ao 2: step " + this.i);
+                        this.i++;
+
+                        if (this.i > 8) {
+                            this.eventSink.castEvent("e2");
+                            return;
+                        }
+
+                        if (this.i % 3 == 1)
+                            host.sleep(250);
                     }
-
-                    if (this.i % 3 == 1)
-                        host.sleep(250);
-                }
+                };
+                ctx.activeObjectHost().add(rule);
+                return rule;
             };
-            ctx.activeObjectHost().add(rule);
-            return rule;
-        };
-        state2.addRuleFactory(ruleFactory2);
-        state2.addRuleFactory(ruleFactory2);
-        
-        var plant = { name: "Plant" };
+            state2.addRuleFactory(ruleFactory2);
+            state2.addRuleFactory(ruleFactory2);
 
-        var automaton = new Automaton(plant);
-        automaton.addState("s1", state1);
-        automaton.addState("s2", state2);
+            var plant = { name: "Plant" };
 
-        automaton.addEdge("s1", "e1", "s2");
-        automaton.addEdge("s2", "e2", "s1");
-        
-        automaton.setState("s1");
-    </script>
-</head>
-<body>
+            var automaton = new Automaton(plant);
+            automaton.addState("s1", state1);
+            automaton.addState("s2", state2);
 
-</body>
+            automaton.addEdge("s1", "e1", "s2");
+            automaton.addEdge("s2", "e2", "s1");
+
+            automaton.setState("s1");
+        </script>
+    </head>
+    <body>
+
+    </body>
 </html>
