@@ -12,7 +12,7 @@
                 console.log("s1: enter");
             },
             work : function() {
-                console.log("s1: work");
+                console.log("s1: working on the " + this.plant.name);
                 this.eventSink.castEvent("e1");
             }
         };
@@ -23,12 +23,14 @@
                 console.log("s2: exit");
             },
             work : function() {
-                console.log("s2: work");
+                console.log("s2: working on the " + this.plant.name);
                 this.eventSink.castEvent("e2");
             }
         };
 
-        var automaton = new Automaton();
+        var plant = { name: "Plant" };
+
+        var automaton = new Automaton(plant);
         automaton.work = function() {
             this.state().work();
         };

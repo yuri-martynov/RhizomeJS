@@ -1,8 +1,8 @@
-﻿function Automaton() {
+﻿function Automaton(plantObj) {
     var states = [];
     var edges = [];
     var currentState = null;
-    var plant = undefined;
+    var plant = plantObj;
 
     function state(id, stateObj) {
         this.id = id;
