@@ -8,6 +8,7 @@
 
         var state1 = {
             eventSink: undefined,
+            plant: undefined,
             enter: function() {
                 console.log("s1: enter");
             },
@@ -19,7 +20,8 @@
         
         var state2 = {
             eventSink: undefined,
-            exit : function() {
+            plant: undefined,
+            exit: function () {
                 console.log("s2: exit");
             },
             work : function() {
@@ -42,11 +44,8 @@
         automaton.addEdge("s1", "e1", "s2");
         automaton.addEdge("s2", "e2", "s1");
 
-//        console.log(automaton.stateId());
         automaton.work();
-//        console.log(automaton.stateId());
         automaton.work();
-//        console.log(automaton.stateId());
 
     </script>
 </head>

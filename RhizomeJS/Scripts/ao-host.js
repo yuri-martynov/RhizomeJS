@@ -1,7 +1,8 @@
-﻿activeObjectHost = {
-    activeObjects: [],
+﻿function ActiveObjectHost () {
+    
+    var activeObjects = [];
 
-    add: function(activeObject) {
+    this.add = function(activeObject) {
 
         var host = {
             stop: function() {
@@ -14,7 +15,7 @@
         };
 
         var wrapper = {
-            step: function () {
+            step: function() {
                 activeObject.$wakeupTime = undefined;
                 activeObject.step(host);
             },
@@ -30,16 +31,16 @@
             }
         };
 
-        this.activeObjects.push(wrapper);
-    }, // add
+        activeObjects.push(wrapper);
+    }; // add
 
-    run: function() {
+    var run = function() {
 
-        while (this.activeObjects.length > 0) {
+        while (activeObjects.length > 0) {
 
             var resumeDate = undefined;
-            for (var i in this.activeObjects) {
-                var activeObject = this.activeObjects[i];
+            for (var i in activeObjects) {
+                var activeObject = activeObjects[i];
 
                 var runAfter = activeObject.runAfter();
                 if (runAfter <= 0) {
@@ -51,18 +52,22 @@
                 }
             }
 
-            for (var j = this.activeObjects.length - 1; j >= 0; j--) {
-                if (this.activeObjects[j].isActive() == false)
-                    this.activeObjects.splice(j, 1);
+            for (var j = activeObjects.length - 1; j >= 0; j--) {
+                if (activeObjects[j].isActive() == false)
+                    activeObjects.splice(j, 1);
             }
 
             if (resumeDate != undefined) {
                 var resumeAfter = resumeDate - new Date();
                 if (resumeAfter > 0) {
-                    setTimeout(function() { this.run(); }.bind(this), resumeAfter);
+                    setTimeout(function() { run(); }.bind(this), resumeAfter);
                     return;
                 }
             }
         } // while
-    } // run
+    }; // run
+
+    this.run = function() {
+        run();
+    };
 }
