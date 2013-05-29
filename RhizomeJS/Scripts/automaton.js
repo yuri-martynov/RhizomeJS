@@ -32,7 +32,7 @@
         }
 
         currentState = getStateById(id);
-        
+
         if (currentState != null) {
             var enter = currentState.stateObj.enter;
             if (enter != undefined) enter();
@@ -91,10 +91,4 @@
         edges.push(new edge(sourceState, event, targetState));
     };
 
-
-}
-
-function State() {
-    this.eventSink = undefined;
-    this.plant = undefined;
 }
