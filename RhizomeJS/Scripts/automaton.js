@@ -1,7 +1,7 @@
 ﻿function Automaton() {
     var states = [];
     var edges = [];
-    var currentState = undefined;
+    var currentState = null;
     var plant = undefined;
 
     function state(id, stateObj) {
@@ -24,26 +24,35 @@
 
         return null;
     }
-    
-    var setState = function (id) {
-        // todo: check for null
+
+    var setState = function(id) {
+        if (currentState != null) {
+            var exit = currentState.stateObj.exit;
+            if (exit != undefined) exit();
+        }
+
         currentState = getStateById(id);
+        
+        if (currentState != null) {
+            var enter = currentState.stateObj.enter;
+            if (enter != undefined) enter();
+        }
     };
 
-    this.setState = function (id) {
+    this.setState = function(id) {
         setState(id);
     };
 
-    this.state = function () {
+    this.state = function() {
         return currentState.stateObj;
     };
 
-    this.stateId = function () {
+    this.stateId = function() {
         return currentState.id;
     };
 
     function castEvent(sourceState, event) {
-        if (currentState == undefined) {
+        if (currentState == null) {
             console.log("current state is undefined");
             return;
         }

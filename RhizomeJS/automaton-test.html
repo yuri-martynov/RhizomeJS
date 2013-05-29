@@ -7,15 +7,23 @@
     <script>
 
         var state1 = {
-            eventSink : undefined,
+            eventSink: undefined,
+            enter: function() {
+                console.log("s1: enter");
+            },
             work : function() {
+                console.log("s1: work");
                 this.eventSink.castEvent("e1");
             }
         };
         
         var state2 = {
-            eventSink : undefined,
+            eventSink: undefined,
+            exit : function() {
+                console.log("s2: exit");
+            },
             work : function() {
+                console.log("s2: work");
                 this.eventSink.castEvent("e2");
             }
         };
@@ -32,11 +40,11 @@
         automaton.addEdge("s1", "e1", "s2");
         automaton.addEdge("s2", "e2", "s1");
 
-        console.log(automaton.stateId());
+//        console.log(automaton.stateId());
         automaton.work();
-        console.log(automaton.stateId());
+//        console.log(automaton.stateId());
         automaton.work();
-        console.log(automaton.stateId());
+//        console.log(automaton.stateId());
 
     </script>
 </head>
