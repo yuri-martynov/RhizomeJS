@@ -10,11 +10,16 @@
             i : 1,
 
             step: function (host) {
-                console.log("1: step " + this.i);
-                host.sleep(1000);
+                console.log("ao 1: step " + this.i);
                 this.i++;
-                if (this.i > 10)
+
+                if (this.i > 10) {
                     host.stop();
+                    return;
+                }
+
+                if (this.i % 2 == 1)
+                    host.sleep(555);
             }
         };
 
@@ -22,13 +27,16 @@
             i : 1,
 
             step: function (host) {
-                console.log("2: step " + this.i);
-                if (this.i % 2 == 0)
-                    host.sleep(1500);
-
+                console.log("ao 2: step " + this.i);
                 this.i++;
-                if (this.i > 20)
+
+                if (this.i > 20) {
                     host.stop();
+                    return;
+                }
+
+                if (this.i % 2 == 0)
+                    host.sleep(1333);
             }
         };
 
