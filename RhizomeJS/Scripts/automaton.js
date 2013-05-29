@@ -53,18 +53,19 @@
 
     function castEvent(sourceState, event) {
         if (currentState == null) {
-            console.log("current state is undefined");
+            console.error("current state is undefined");
             return;
         }
 
         if (sourceState != currentState.id) {
-            console.log("eventSource = " + sourceState + ", current state = " + currentState.id);
+            console.warn("eventSource = " + sourceState + ", current state = " + currentState.id);
             return;
         }
 
         for (var i in edges) {
             var targetState = edges[i].getTargetState(sourceState, event);
             if (targetState != null) {
+                console.info("before setState: %s + %s -> %s", sourceState, event, targetState);
                 setState(targetState);
                 return;
             }
@@ -97,6 +98,3 @@ function State() {
     this.eventSink = undefined;
     this.plant = undefined;
 }
-
-//var a = new Automaton();
-//a.addState()

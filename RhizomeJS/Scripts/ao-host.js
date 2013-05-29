@@ -46,6 +46,8 @@
 
             var resumeDate = undefined;
             for (var i in activeObjects) {
+                if (activeObjects.length == 0) return; // todo: was stopped
+
                 var activeObject = activeObjects[i];
 
                 var runAfter = activeObject.runAfter();
@@ -75,5 +77,9 @@
 
     this.run = function() {
         run();
+    };
+
+    this.stop = function() {
+        activeObjects = [];
     };
 }
