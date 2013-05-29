@@ -58,11 +58,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="automaton-test.html" />
-    <Content Include="active-state-test.html" />
-    <Content Include="Scripts\active-state.js" />
-    <Content Include="Scripts\ao-host.js" />
+    <Content Include="state-test.html" />
+    <Content Include="Scripts\state.js" />
+    <Content Include="Scripts\active-object.js" />
     <Content Include="Scripts\automaton.js" />
-    <Content Include="ao-host-test.html" />
+    <Content Include="active-object-test.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
