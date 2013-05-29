@@ -2,7 +2,7 @@
     
     var activeObjects = [];
 
-    this.add = function(activeObject) {
+    var add = function(activeObject) {
 
         var host = {
             stop: function() {
@@ -33,6 +33,12 @@
 
         activeObjects.push(wrapper);
     }; // add
+
+    this.add = function() {
+        for (var i in arguments) {
+            add(arguments[i]);
+        }
+    };
 
     var run = function() {
 
