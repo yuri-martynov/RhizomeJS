@@ -30,20 +30,26 @@
             }
         };
 
-        var plant = { name: "Plant" };
 
-        var automaton = new Automaton(plant);
-        automaton.work = function() {
-            this.state().work();
-        };
+        function TestAutomaton() {
+            this.work = function () {
+                this.state().work();
+            };
+            
+        }
+        var plant = { name: "Plant" };
+        TestAutomaton.prototype = new Automaton(plant);
+        
+        var automaton = new TestAutomaton();
 
         automaton.addState("s1", state1);
         automaton.addState("s2", state2);
-        automaton.setState("s1");
 
         automaton.addEdge("s1", "e1", "s2");
         automaton.addEdge("s2", "e2", "s1");
-
+        
+        automaton.setState("s1");
+        
         automaton.work();
         automaton.work();
 
