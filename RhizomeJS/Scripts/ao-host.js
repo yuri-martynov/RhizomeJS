@@ -6,7 +6,7 @@
         var host = {
             stop: function() {
                 activeObject.$stopped = true;
-            }.bind(this),
+            },
 
             sleep: function(msec) {
                 activeObject.$wakeupTime = new Date(new Date().getTime() + msec);

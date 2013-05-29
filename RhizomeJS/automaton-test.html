@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="Scripts/automaton.js"></script>
+    
+    <script>
+
+        var state1 = {
+            eventSink : undefined,
+            work : function() {
+                this.eventSink.castEvent("e1");
+            }
+        };
+        
+        var state2 = {
+            eventSink : undefined,
+            work : function() {
+                this.eventSink.castEvent("e2");
+            }
+        };
+
+        var automaton = new Automaton();
+        automaton.work = function() {
+            this.state().work();
+        };
+
+        automaton.addState("s1", state1);
+        automaton.addState("s2", state2);
+        automaton.setState("s1");
+
+        automaton.addEdge("s1", "e1", "s2");
+        automaton.addEdge("s2", "e2", "s1");
+
+        console.log(automaton.stateId());
+        automaton.work();
+        console.log(automaton.stateId());
+        automaton.work();
+        console.log(automaton.stateId());
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>
