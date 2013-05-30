@@ -26,8 +26,7 @@
             },
             work : function() {
                 console.log("s2: working on the " + this.plant.name);
-                this.eventSink.goBack();
-//                this.eventSink.castEvent("e2");
+                this.eventSink.castEvent("e2");
             }
         };
 
@@ -47,7 +46,7 @@
         automaton.addState("s2", state2);
 
         automaton.addEdge("s1", "e1", "s2");
-        automaton.addEdge("s2", "e2", "s1");
+        automaton.addEdge("s2", "e2", StackAutomaton.PrevState);
         
         automaton.setInitState("s1");
         

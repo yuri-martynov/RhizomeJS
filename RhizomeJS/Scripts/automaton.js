@@ -112,11 +112,12 @@
         return null;
     }
 
-    this.addState = function(id, stateObj, eventSink) {
+    this.addState = function(id, stateObj) {
         // todo: check for unique id
-        eventSink = eventSink || {};
-        eventSink.castEvent = function(event) {
-            castEvent(id, event);
+        var eventSink = {
+            castEvent: function(event) {
+                castEvent(id, event);
+            }
         };
 
         stateObj.eventSink = eventSink;
@@ -124,7 +125,9 @@
         states.push(new state(id, stateObj));
     };
 
-
+    this._transitionFactory = function (event, targetState) {
+        return new transition(event, targetState);
+    };
 
     this.addEdge = function(sourceState, event, targetState) {
         var e = findEdgeBySourceState(sourceState);
@@ -132,41 +135,19 @@
             e = new edge(sourceState);
             edges.push(e);
         }
-        var t = new transition(event, targetState);
+        var t = instance._transitionFactory(event, targetState);
         e.addTransition(t);
     };
 
 }
 
 function StackAutomaton() {
+
     Automaton.apply(this, arguments);
     this._setInstance(this);
-    var self = this;
     var baseSetState = this._setState;
 
     var prevStates = [];
-
-    var baseAddState = this.addState;
-    this.addState = function(id, stateObj) {
-        var eventSink = {
-            goBack: function() {
-                var l = prevStates.length;
-                if (l == 0) {
-                    console.error("goBack: no prev state");
-                    return;
-                }
-
-                var prevIndex = l - 1;
-                var prevStateId = prevStates[prevIndex];
-                prevStates.splice(prevIndex, 1);
-
-                console.info("goBack: %s -> %s", self.getStateId(), prevStateId);
-                baseSetState(prevStateId);
-            }
-        };
-
-        baseAddState(id, stateObj, eventSink);
-    };
 
     this._setState = function(id) {
         var currentStateId = this.getStateId();
@@ -174,5 +155,35 @@ function StackAutomaton() {
             prevStates.push(currentStateId);
 
         baseSetState(id);
+    };
+
+    StackAutomaton.PrevState = "StackAutomaton.PrevState." + new Date().getTime();
+    
+    function backTransition(event) {
+
+        this.getTargetState = function (e) {
+            if (e != event) return null;
+
+            var l = prevStates.length;
+            if (l == 0) {
+                console.error("backTransition.getTargetState: no prev state");
+                return null;
+            }
+
+            var prevIndex = l - 1;
+            var prevStateId = prevStates[prevIndex];
+            prevStates.splice(prevIndex, 1); // todo: statefull ???
+
+            return prevStateId;
+        };
+    }
+    
+    var baseTransitionFactory = this._transitionFactory;
+    this._transitionFactory = function (event, targetState) {
+        if (targetState === StackAutomaton.PrevState) {
+            return new backTransition(event);
+        }
+        else
+            return baseTransitionFactory(event, targetState);
     };
 }
