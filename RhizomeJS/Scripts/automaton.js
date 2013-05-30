@@ -4,20 +4,37 @@
     var edges = [];
     var currentState = null;
     var plant = plantObj || {};
-    
-    this._setInstance = function (s) {
+
+    this._setInstance = function(s) {
         instance = s;
     };
-    
+
     function state(id, stateObj) {
         this.id = id;
         this.stateObj = stateObj;
     }
 
-    function edge(sourceState, event, targetState) {
+    function transition(event, targetState) {
 
-        this.getTargetState = function(s, e) {
-            return s == sourceState && e == event ? targetState : null;
+        this.getTargetState = function(e) {
+            return e == event ? targetState : null;
+        };
+    }
+
+    function edge(sourceState) {
+        this.source = sourceState;
+
+        var transitions = [];
+        this.addTransition = function(t) {
+            transitions.push(t);
+        };
+
+        this.getTargetState = function(event) {
+            for (var i = 0; i < transitions.length; i++) {
+                var target = transitions[i].getTargetState(event);
+                if (target != null) return target;
+            }
+            return null;
         };
     }
 
@@ -57,7 +74,7 @@
     };
 
     this.getStateId = function() {
-        return  currentState == null ? null : currentState.id;
+        return currentState == null ? null : currentState.id;
     };
 
     function castEvent(sourceState, event) {
@@ -71,15 +88,29 @@
             return;
         }
 
-        for (var i = 0; i < edges.length; i++) {
-            var targetState = edges[i].getTargetState(sourceState, event);
-            if (targetState != null) {
-                console.info("castEvent: %s + %s -> %s", sourceState, event, targetState);
-                instance._setState(targetState);
-                return;
-            }
+        var e = findEdgeBySourceState(sourceState);
+        if (e == null) {
+            console.error("castEvent: edge not found for state %s", sourceState);
+            return;
         }
+
+        var targetState = e.getTargetState(event);
+        if (targetState == null) {
+            console.error("castEvent: transition not found %s + %s -> ?", sourceState, event);
+            return;
+        }
+        
+        console.info("castEvent: %s + %s -> %s", sourceState, event, targetState);
+        instance._setState(targetState);
     };
+    
+    function findEdgeBySourceState(source) {
+        for (var i = 0; i < edges.length; i++) {
+            var e = edges[i];
+            if (e.source == source) return e;
+        }
+        return null;
+    }
 
     this.addState = function(id, stateObj, eventSink) {
         // todo: check for unique id
@@ -93,9 +124,16 @@
         states.push(new state(id, stateObj));
     };
 
-    this.addEdge = function (sourceState, event, targetState) {
-        // todo: check for unique args
-        edges.push(new edge(sourceState, event, targetState));
+
+
+    this.addEdge = function(sourceState, event, targetState) {
+        var e = findEdgeBySourceState(sourceState);
+        if (e == null) {
+            e = new edge(sourceState);
+            edges.push(e);
+        }
+        var t = new transition(event, targetState);
+        e.addTransition(t);
     };
 
 }
@@ -111,17 +149,17 @@ function StackAutomaton() {
     var baseAddState = this.addState;
     this.addState = function(id, stateObj) {
         var eventSink = {
-            goBack: function () {
+            goBack: function() {
                 var l = prevStates.length;
                 if (l == 0) {
                     console.error("goBack: no prev state");
                     return;
                 }
-                
+
                 var prevIndex = l - 1;
                 var prevStateId = prevStates[prevIndex];
                 prevStates.splice(prevIndex, 1);
-                
+
                 console.info("goBack: %s -> %s", self.getStateId(), prevStateId);
                 baseSetState(prevStateId);
             }
@@ -130,7 +168,7 @@ function StackAutomaton() {
         baseAddState(id, stateObj, eventSink);
     };
 
-    this._setState = function (id) {
+    this._setState = function(id) {
         var currentStateId = this.getStateId();
         if (currentStateId != null)
             prevStates.push(currentStateId);
