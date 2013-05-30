@@ -16,11 +16,10 @@
         }
     };
 
-    this.enter = function(instance, ctx) {
-        instance = instance || self;
+    this.enter = function(ctx) {
         ctx = ctx || {};
-        ctx.eventSink = instance.eventSink;
-        ctx.plant = instance.plant;
+        ctx.eventSink = self.eventSink;
+        ctx.plant = self.plant;
 
         for (var i = 0; i < rulesFactories.length; i++) {
             var rule = rulesFactories[i](ctx);
@@ -47,13 +46,17 @@
 }
 
 function ActiveState() {
-    var self = this;
+    CompositeState.apply(this, arguments);
 
     var context = function() {
         var activeObjectHost = null;
 
-        this.activeObjectHost = function() {
+        var getActiveObjectHost = function() {
             return activeObjectHost || (activeObjectHost = new ActiveObjectHost());
+        };
+
+        this.addActiveObject = function(activeObject) {
+            getActiveObjectHost().add(activeObject);
         };
 
         this.run = function() {
@@ -71,17 +74,17 @@ function ActiveState() {
 
     var ctx = new context(this.eventSink, this.plant);
 
-    var enter = this.enter;
+    var baseEnter = this.enter;
     this.enter = function() {
-        enter(self, ctx);
+        baseEnter(ctx);
+
         ctx.run();
     };
 
-    var exit = this.exit;
+    var baseExit = this.exit;
     this.exit = function() {
-        exit();
         ctx.stop();
+
+        baseExit();
     };
 }
-
-ActiveState.prototype = new CompositeState();

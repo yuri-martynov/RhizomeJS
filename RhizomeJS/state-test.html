@@ -8,7 +8,7 @@
     
         <script>
 
-        // STATE 1
+            // STATE 1
             var state1 = new ActiveState();
             var ruleFactory1 = function(ctx) {
                 var rule = {
@@ -29,7 +29,7 @@
                             host.sleep(888);
                     }
                 };
-                ctx.activeObjectHost().add(rule);
+                ctx.addActiveObject(rule);
                 return rule;
             };
             state1.addRuleFactory(ruleFactory1);
@@ -56,7 +56,7 @@
                             host.sleep(250);
                     }
                 };
-                ctx.activeObjectHost().add(rule);
+                ctx.addActiveObject(rule);
                 return rule;
             };
             state2.addRuleFactory(ruleFactory2);
@@ -71,7 +71,7 @@
             automaton.addEdge("s1", "e1", "s2");
             automaton.addEdge("s2", "e2", "s1");
 
-            automaton.setState("s1");
+            automaton.setInitState("s1");
         </script>
     </head>
     <body>

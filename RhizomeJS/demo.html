@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>RhizomeJS demo</title>
+
+        <script src="Scripts/active-object.js"> </script>
+        <script src="Scripts/automaton.js"> </script>
+        <script src="Scripts/state.js"> </script>
+        
+        <script>
+            var plant = { name: "Plant" };
+
+            var automaton = new Automaton(plant);
+            automaton.addState("s1", state1);
+            automaton.addState("s2", state2);
+
+            automaton.addEdge("s1", "e1", "s2");
+            automaton.addEdge("s2", "e2", "s1");
+
+            automaton.setInitState("s1");
+
+        </script>
+        
+    </head>
+    <body>
+
+    </body>
+</html>

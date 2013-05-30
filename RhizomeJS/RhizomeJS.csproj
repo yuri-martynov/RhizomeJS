@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="automaton-test.html" />
+    <Content Include="demo.html" />
     <Content Include="state-test.html" />
     <Content Include="Scripts\state.js" />
     <Content Include="Scripts\active-object.js" />
@@ -75,6 +76,10 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="demo\plants\" />
+    <Folder Include="demo\rules\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

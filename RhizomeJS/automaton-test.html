@@ -26,19 +26,20 @@
             },
             work : function() {
                 console.log("s2: working on the " + this.plant.name);
-                this.eventSink.castEvent("e2");
+                this.eventSink.goBack();
+//                this.eventSink.castEvent("e2");
             }
         };
 
 
         function TestAutomaton() {
             this.work = function () {
-                this.state().work();
+                this.getState().work();
             };
             
         }
         var plant = { name: "Plant" };
-        TestAutomaton.prototype = new Automaton(plant);
+        TestAutomaton.prototype = new StackAutomaton(plant);
         
         var automaton = new TestAutomaton();
 
@@ -48,7 +49,7 @@
         automaton.addEdge("s1", "e1", "s2");
         automaton.addEdge("s2", "e2", "s1");
         
-        automaton.setState("s1");
+        automaton.setInitState("s1");
         
         automaton.work();
         automaton.work();
