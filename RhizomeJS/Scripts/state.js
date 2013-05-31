@@ -1,8 +1,8 @@
 ﻿function CompositeState() {
-    var self = this;
-    this.eventSink = undefined;
-    this.plant = undefined;
+    State.apply(this, arguments);
 
+    var self = this;
+    
     var rulesFactories = [];
     var rules = [];
 
@@ -18,8 +18,8 @@
 
     this.enter = function(ctx) {
         ctx = ctx || {};
-        ctx.eventSink = self.eventSink;
-        ctx.plant = self.plant;
+        ctx.eventSink = self.getEventSink();
+        ctx.plant = self.getPlant();
 
         for (var i = 0; i < rulesFactories.length; i++) {
             var rule = rulesFactories[i](ctx);
@@ -47,7 +47,7 @@
 
 function ActiveState() {
     CompositeState.apply(this, arguments);
-
+    
     var context = function() {
         var activeObjectHost = null;
 
@@ -72,7 +72,7 @@ function ActiveState() {
         };
     };
 
-    var ctx = new context(this.eventSink, this.plant);
+    var ctx = new context();
 
     var baseEnter = this.enter;
     this.enter = function() {

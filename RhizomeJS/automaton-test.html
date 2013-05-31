@@ -1,62 +1,53 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title></title>
-    <script src="Scripts/automaton.js"></script>
-    <script src="Scripts/conditions.js"></script>
+    <head>
+        <title></title>
+        <script src="Scripts/automaton.js"> </script>
+        <script src="Scripts/conditions.js"> </script>
     
-    <script>
+        <script>
 
-        var state1 = {
-            eventSink: undefined,
-            plant: undefined,
-            enter: function() {
-                console.log("s1: enter");
-            },
-            work : function() {
-                console.log("s1: working on the " + this.plant.name);
-                this.eventSink.castEvent("e1", "data1");
-            }
-        };
-        
-        var state2 = {
-            eventSink: undefined,
-            plant: undefined,
-            exit: function () {
-                console.log("s2: exit");
-            },
-            work : function() {
-                console.log("s2: working on the " + this.plant.name);
-                this.eventSink.castEvent("e2");
-            }
-        };
-
-
-        function TestAutomaton() {
-            this.work = function () {
-                this.getState().work();
+            var state1 = new State();
+            state1.enter = function() { console.log("s1: enter"); };
+            state1.work = function() {
+                console.log("s1: working on the " + this.getPlant().name);
+                this.getEventSink().castEvent("e1", "data1");
             };
-            
-        }
-        var plant = { name: "Plant" };
-        TestAutomaton.prototype = new StackAutomaton(plant);
-        
-        var automaton = new TestAutomaton();
 
-        automaton.addState("s1", state1);
-        automaton.addState("s2", state2);
 
-        automaton.addEdge("s1", "e1", Conditions.Random({ state: "s2", prob: 25 }, { state: "s2", prob: 75 }));
-        automaton.addEdge("s2", "e2", StackAutomaton.PrevState);
-        
-        automaton.setInitState("s1");
-        
-        automaton.work();
-        automaton.work();
+            var state2 = new State();
+            state2.exit = function() { console.log("s2: exit"); };
+            state2.work = function() {
+                console.log("s2: working on the " + this.getPlant().name);
+                this.getEventSink().castEvent("e2");
+            };
 
-    </script>
-</head>
-<body>
+            function TestAutomaton() {
+                StackAutomaton.apply(this, arguments);
 
-</body>
+                this.work = function() {
+                    this.getState().work();
+                };
+                
+                this.addState("s1", state1);
+                this.addState("s2", state2);
+
+                this.addEdge("s1", "e1", Conditions.Random({ state: "s2", prob: 25 }, { state: "s2", prob: 75 }));
+                this.addEdge("s2", "e2", StackAutomaton.PrevState);
+
+                this.setInitState("s1");
+            }
+
+            var plant = { name: "Plant" };
+            var automaton = new TestAutomaton(plant);
+            automaton.enter();
+
+            automaton.work();
+            automaton.work();
+
+        </script>
+    </head>
+    <body>
+
+    </body>
 </html>

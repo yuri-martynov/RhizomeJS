@@ -4,6 +4,10 @@
     var edges = [];
     var currentState = null;
     var plant = plantObj || {};
+    var eventSink = null;
+
+    this.setPlant = function(value) { plant = value; };
+    this.setEventSink = function(value) { eventSink = value; };
 
     this._setInstance = function(s) {
         instance = s;
@@ -21,7 +25,7 @@
     }
 
     function conditionalTransition(event, conditionFunc) {
-        this.getTargetState = function (e, data) {
+        this.getTargetState = function(e, data) {
             return e == event ? conditionFunc(plant, data) : null;
         };
     }
@@ -52,18 +56,27 @@
         return null;
     }
 
+    function enter() {
+        if (currentState == null) return;
+
+        var stateEnter = currentState.stateObj.enter;
+        if (stateEnter != undefined) stateEnter();
+    }
+
+    function exit() {
+        if (currentState == null) return;
+
+        var stateExit = currentState.stateObj.exit;
+        if (stateExit != undefined) stateExit();
+    }
+
+    this.exit = function() { exit(); };
+    this.enter = function() { enter(); };
+
     function setState(id) {
-        if (currentState != null) {
-            var exit = currentState.stateObj.exit;
-            if (exit != undefined) exit();
-        }
-
+        exit();
         currentState = getStateById(id);
-
-        if (currentState != null) {
-            var enter = currentState.stateObj.enter;
-            if (enter != undefined) enter();
-        }
+        enter();
     }
 
     this._setState = function(id) {
@@ -71,7 +84,7 @@
     };
 
     this.setInitState = function(id) {
-        setState(id);
+        currentState = getStateById(id);
     };
 
     this.getState = function() {
@@ -104,11 +117,11 @@
             console.error("castEvent: transition not found %s + %s -> ?", sourceState, event);
             return;
         }
-        
+
         console.info("castEvent: %s + %s -> %s", sourceState, event, targetState);
         instance._setState(targetState);
-    };
-    
+    }
+
     function findEdgeBySourceState(source) {
         for (var i = 0; i < edges.length; i++) {
             var e = edges[i];
@@ -118,19 +131,24 @@
     }
 
     this.addState = function(id, stateObj) {
-        // todo: check for unique id
-        var eventSink = {
-            castEvent: function(event, data) {
-                castEvent(id, event, data);
-            }
-        };
 
-        stateObj.eventSink = eventSink;
-        stateObj.plant = plant;
+        var setEventSink = stateObj.setEventSink;
+        if (setEventSink) {
+            var es = {
+                castEvent: function(event, data) {
+                    castEvent(id, event, data);
+                }
+            };
+            setEventSink(es);
+        }
+
+        var setPlant = stateObj.setPlant;
+        if (setPlant) setPlant(plant);
+
         states.push(new state(id, stateObj));
     };
 
-    this._transitionFactory = function (event, targetOrDelegate) {
+    this._transitionFactory = function(event, targetOrDelegate) {
         return (targetOrDelegate instanceof Function)
             ? new conditionalTransition(event, targetOrDelegate)
             : new transition(event, targetOrDelegate);
@@ -165,10 +183,10 @@ function StackAutomaton() {
     };
 
     StackAutomaton.PrevState = "StackAutomaton.PrevState." + new Date().getTime();
-    
+
     function backTransition(event) {
 
-        this.getTargetState = function (e) {
+        this.getTargetState = function(e) {
             if (e != event) return null;
 
             var l = prevStates.length;
@@ -184,13 +202,23 @@ function StackAutomaton() {
             return prevStateId;
         };
     }
-    
+
     var baseTransitionFactory = this._transitionFactory;
-    this._transitionFactory = function (event, targetState) {
+    this._transitionFactory = function(event, targetState) {
         if (targetState === StackAutomaton.PrevState) {
             return new backTransition(event);
-        }
-        else
+        } else
             return baseTransitionFactory(event, targetState);
     };
+}
+
+function State() {
+    var eventSink = null;
+    var plant = null;
+
+    this.setEventSink = function (value) { eventSink = value; };
+    this.getEventSink = function () { return eventSink; };
+
+    this.setPlant = function (value) { plant = value; };
+    this.getPlant = function () { return plant; };
 }
