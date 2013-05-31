@@ -3,6 +3,7 @@
 <head>
     <title></title>
     <script src="Scripts/automaton.js"></script>
+    <script src="Scripts/conditions.js"></script>
     
     <script>
 
@@ -14,7 +15,7 @@
             },
             work : function() {
                 console.log("s1: working on the " + this.plant.name);
-                this.eventSink.castEvent("e1");
+                this.eventSink.castEvent("e1", "data1");
             }
         };
         
@@ -45,11 +46,7 @@
         automaton.addState("s1", state1);
         automaton.addState("s2", state2);
 
-        var delegate = function(plant) {
-            return "s2";
-        };
-        
-        automaton.addEdge("s1", "e1", delegate);
+        automaton.addEdge("s1", "e1", Conditions.Any("s2","s2","s2"));
         automaton.addEdge("s2", "e2", StackAutomaton.PrevState);
         
         automaton.setInitState("s1");

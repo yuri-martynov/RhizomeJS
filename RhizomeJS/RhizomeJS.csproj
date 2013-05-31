@@ -59,6 +59,7 @@
   <ItemGroup>
     <Content Include="automaton-test.html" />
     <Content Include="demo.html" />
+    <Content Include="Scripts\conditions.js" />
     <Content Include="state-test.html" />
     <Content Include="Scripts\state.js" />
     <Content Include="Scripts\active-object.js" />

@@ -21,8 +21,8 @@
     }
 
     function conditionalTransition(event, conditionFunc) {
-        this.getTargetState = function (e) {
-            return e == event ? conditionFunc(plant) : null;
+        this.getTargetState = function (e, data) {
+            return e == event ? conditionFunc(plant, data) : null;
         };
     }
 
@@ -34,9 +34,9 @@
             transitions.push(t);
         };
 
-        this.getTargetState = function(event) {
+        this.getTargetState = function(event, data) {
             for (var i = 0; i < transitions.length; i++) {
-                var target = transitions[i].getTargetState(event);
+                var target = transitions[i].getTargetState(event, data);
                 if (target != null) return target;
             }
             return null;
@@ -82,7 +82,7 @@
         return currentState == null ? null : currentState.id;
     };
 
-    function castEvent(sourceState, event) {
+    function castEvent(sourceState, event, data) {
         if (currentState == null) {
             console.error("current state is undefined");
             return;
@@ -99,7 +99,7 @@
             return;
         }
 
-        var targetState = e.getTargetState(event);
+        var targetState = e.getTargetState(event, data);
         if (targetState == null) {
             console.error("castEvent: transition not found %s + %s -> ?", sourceState, event);
             return;
@@ -120,8 +120,8 @@
     this.addState = function(id, stateObj) {
         // todo: check for unique id
         var eventSink = {
-            castEvent: function(event) {
-                castEvent(id, event);
+            castEvent: function(event, data) {
+                castEvent(id, event, data);
             }
         };
 
