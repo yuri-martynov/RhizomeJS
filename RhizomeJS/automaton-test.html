@@ -46,7 +46,7 @@
         automaton.addState("s1", state1);
         automaton.addState("s2", state2);
 
-        automaton.addEdge("s1", "e1", Conditions.Row("s2","s2","s2"));
+        automaton.addEdge("s1", "e1", Conditions.Random({ state: "s2", prob: 25 }, { state: "s2", prob: 75 }));
         automaton.addEdge("s2", "e2", StackAutomaton.PrevState);
         
         automaton.setInitState("s1");
