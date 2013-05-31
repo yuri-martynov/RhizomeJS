@@ -15,9 +15,14 @@
     }
 
     function transition(event, targetState) {
-
         this.getTargetState = function(e) {
             return e == event ? targetState : null;
+        };
+    }
+
+    function conditionalTransition(event, conditionFunc) {
+        this.getTargetState = function (e) {
+            return e == event ? conditionFunc(plant) : null;
         };
     }
 
@@ -125,8 +130,10 @@
         states.push(new state(id, stateObj));
     };
 
-    this._transitionFactory = function (event, targetState) {
-        return new transition(event, targetState);
+    this._transitionFactory = function (event, targetOrDelegate) {
+        return (targetOrDelegate instanceof Function)
+            ? new conditionalTransition(event, targetOrDelegate)
+            : new transition(event, targetOrDelegate);
     };
 
     this.addEdge = function(sourceState, event, targetState) {

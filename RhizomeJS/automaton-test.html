@@ -45,7 +45,11 @@
         automaton.addState("s1", state1);
         automaton.addState("s2", state2);
 
-        automaton.addEdge("s1", "e1", "s2");
+        var delegate = function(plant) {
+            return "s2";
+        };
+        
+        automaton.addEdge("s1", "e1", delegate);
         automaton.addEdge("s2", "e2", StackAutomaton.PrevState);
         
         automaton.setInitState("s1");
