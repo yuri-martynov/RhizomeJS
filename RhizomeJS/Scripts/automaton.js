@@ -1,6 +1,6 @@
 ﻿function Automaton(plantObj) {
     var instance = this;
-    var states = [];
+    var states = {};
     var edges = {};
     var currentState = null;
     var plant = plantObj || {};
@@ -13,7 +13,12 @@
     this._setInstance = function(s) { instance = s; };
     
     this.setInitial = function (id) { initial = id; };
-    var getInitial = function () { return initial || states[0].id; };
+
+    var getInitial = function () {
+        if (initial) return initial;
+        for (var s in states) return s;
+        return null;
+    };
 
     function state(id, stateObj) {
         this.id = id;
@@ -48,14 +53,7 @@
         };
     }
 
-    function getStateById(id) {
-        for (var i = 0; i < states.length; i++) {
-            var s = states[i];
-            if (s.id == id) return s;
-        }
-
-        return null;
-    }
+    function getStateById(id) { return states[id] || null; }
 
     function onEntry() {
         if (currentState == null) return;
@@ -74,9 +72,7 @@
     this.onExit = function() { onExit(); };
     this.onEntry = function () { onEntry(); };
 
-    this.start = function() {
-        setState(getInitial());
-    };
+    this.start = function() { setState(getInitial()); };
 
     function setState(id) {
         onExit();
@@ -140,7 +136,7 @@
         var setPlant = stateObj.setPlant;
         if (setPlant) setPlant(plant);
 
-        states.push(new state(id, stateObj));
+        states[id] = new state(id, stateObj);
     };
 
     this._transitionFactory = function(event, targetOrDelegate) {
