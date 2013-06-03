@@ -1,7 +1,7 @@
 ﻿function Automaton(plantObj) {
     var instance = this;
     var states = [];
-    var edges = [];
+    var edges = {};
     var currentState = null;
     var plant = plantObj || {};
     var eventSink = null;
@@ -32,8 +32,7 @@
         };
     }
 
-    function edge(sourceState) {
-        this.source = sourceState;
+    function edge() {
 
         var transitions = [];
         this.addTransition = function(t) {
@@ -123,11 +122,7 @@
     }
 
     function findEdgeBySourceState(source) {
-        for (var i = 0; i < edges.length; i++) {
-            var e = edges[i];
-            if (e.source == source) return e;
-        }
-        return null;
+        return edges[source] || null;
     }
 
     this.addState = function(id, stateObj) {
@@ -157,13 +152,12 @@
     this.addEdge = function(sourceState, event, targetState) {
         var e = findEdgeBySourceState(sourceState);
         if (e == null) {
-            e = new edge(sourceState);
-            edges.push(e);
+            e = new edge();
+            edges[sourceState] = e;
         }
         var t = instance._transitionFactory(event, targetState);
         e.addTransition(t);
     };
-
 }
 
 function StackAutomaton() {
