@@ -68,12 +68,12 @@
             if (resumeDate != undefined) {
                 var resumeAfter = resumeDate - new Date();
                 if (resumeAfter > 0) {
-                    setTimeout(function() { run(); }.bind(this), resumeAfter);
+                    setTimeout(run, resumeAfter);
                     return;
                 }
             }
         } // while
-    }; // run
+    }.bind(this); // run
 
     this.run = function() {
         run();

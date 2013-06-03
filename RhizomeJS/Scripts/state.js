@@ -1,8 +1,6 @@
 ﻿function CompositeState() {
     State.apply(this, arguments);
 
-    var self = this;
-    
     var rulesFactories = [];
     var rules = [];
 
@@ -18,8 +16,8 @@
 
     this.enter = function(ctx) {
         ctx = ctx || {};
-        ctx.eventSink = self.getEventSink();
-        ctx.plant = self.getPlant();
+        ctx.eventSink = this.getEventSink();
+        ctx.plant = this.getPlant();
 
         for (var i = 0; i < rulesFactories.length; i++) {
             var rule = rulesFactories[i](ctx);
@@ -31,7 +29,7 @@
             if (enter != undefined) enter();
         }
 
-    };
+    }.bind(this);
 
     this.exit = function() {
 

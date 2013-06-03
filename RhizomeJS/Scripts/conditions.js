@@ -38,12 +38,10 @@ Conditions.Row = function() {
         };
     }
 
-    ;
-
     return new row().transition;
 };
 
-Conditions.Random = function () {
+Conditions.Random = function() {
     var states = arguments;
 
     if (states.length == 0)
@@ -61,7 +59,7 @@ Conditions.Random = function () {
     return function() {
         var rnd = Math.random() * sum;
         var s = 0;
-        
+
         for (var j = 0; j < states.length; j++) {
             var state = states[j];
             s += state.prob;
