@@ -174,32 +174,32 @@ function StackAutomaton() {
 
     var prevStates = [];
 
-    this._setState = function(id) {
-        var currentStateId = this.getStateId();
-        if (currentStateId != null)
-            prevStates.push(currentStateId);
+    this._setState = function (id) {
+        
+        if (id == StackAutomaton.PrevState) {
+            var lastIndex = prevStates.length - 1;
+            id = prevStates[lastIndex];
+            prevStates.splice(lastIndex, 1); 
+        } else {
+            var currentStateId = this.getStateId();
+            if (currentStateId != null)
+                prevStates.push(currentStateId);
+        }
 
         baseSetState(id);
     };
-
-    StackAutomaton.PrevState = "StackAutomaton.PrevState." + new Date().getTime();
 
     function backTransition(event) {
 
         this.getTargetState = function(e) {
             if (e != event) return null;
 
-            var l = prevStates.length;
-            if (l == 0) {
+            if (prevStates.length == 0) {
                 console.error("backTransition.getTargetState: no prev state");
                 return null;
             }
 
-            var prevIndex = l - 1;
-            var prevStateId = prevStates[prevIndex];
-            prevStates.splice(prevIndex, 1); // todo: statefull ???
-
-            return prevStateId;
+            return StackAutomaton.PrevState;
         };
     }
 
@@ -211,6 +211,8 @@ function StackAutomaton() {
             return baseTransitionFactory(event, targetState);
     };
 }
+
+StackAutomaton.PrevState = "StackAutomaton.PrevState." + new Date().getTime();
 
 function State() {
     var eventSink = null;
