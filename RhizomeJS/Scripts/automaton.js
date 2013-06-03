@@ -24,28 +24,35 @@
         this.stateObj = stateObj;
     }
 
-    function transition(event, targetState) {
-        this.getTargetState = function(e) {
-            return e == event ? targetState : null;
+    function transition(targetState) {
+        this.getTargetState = function() {
+            return targetState;
         };
     }
 
-    function conditionalTransition(event, conditionFunc) {
-        this.getTargetState = function(e, data) {
-            return e == event ? conditionFunc(plant, data) : null;
+    function conditionalTransition(conditionFunc) {
+        this.getTargetState = function(data) {
+            return conditionFunc(plant, data);
         };
     }
 
     function edge() {
 
-        var transitions = [];
-        this.addTransition = function(t) {
-            transitions.push(t);
+        var eventTransitions = {};
+        this.addTransition = function (event, t) {
+            if (eventTransitions[event] == undefined)
+                eventTransitions[event] = [];
+
+            eventTransitions[event].push(t);
         };
 
-        this.getTargetState = function(event, data) {
-            for (var i = 0; i < transitions.length; i++) {
-                var target = transitions[i].getTargetState(event, data);
+        this.getTargetState = function (event, data) {
+            var transitionsForEvent = eventTransitions[event];
+            if (transitionsForEvent == undefined)
+                return null;
+            
+            for (var i = 0; i < transitionsForEvent.length; i++) {
+                var target = transitionsForEvent[i].getTargetState(data);
                 if (target != null) return target;
             }
             return null;
@@ -133,10 +140,10 @@
         states[id] = new state(id, stateObj);
     };
 
-    this._transitionFactory = function(event, targetOrDelegate) {
+    this._transitionFactory = function(targetOrDelegate) {
         return (targetOrDelegate instanceof Function)
-            ? new conditionalTransition(event, targetOrDelegate)
-            : new transition(event, targetOrDelegate);
+            ? new conditionalTransition(targetOrDelegate)
+            : new transition(targetOrDelegate);
     };
 
     this.addEdge = function(sourceState, event, targetState) {
@@ -145,8 +152,8 @@
             e = new edge();
             states[sourceState].edge = e;
         }
-        var t = instance._transitionFactory(event, targetState);
-        e.addTransition(t);
+        var t = instance._transitionFactory(targetState);
+        e.addTransition(event, t);
     };
 }
 
@@ -173,11 +180,9 @@ function StackAutomaton() {
         baseSetState(id);
     };
 
-    function backTransition(event) {
+    function backTransition() {
 
-        this.getTargetState = function(e) {
-            if (e != event) return null;
-
+        this.getTargetState = function() {
             if (prevStates.length == 0) {
                 console.error("backTransition.getTargetState: no prev state");
                 return null;
@@ -188,11 +193,11 @@ function StackAutomaton() {
     }
 
     var baseTransitionFactory = this._transitionFactory;
-    this._transitionFactory = function(event, targetState) {
+    this._transitionFactory = function(targetState) {
         if (targetState === StackAutomaton.PrevState) {
-            return new backTransition(event);
+            return new backTransition();
         } else
-            return baseTransitionFactory(event, targetState);
+            return baseTransitionFactory(targetState);
     };
 }
 
