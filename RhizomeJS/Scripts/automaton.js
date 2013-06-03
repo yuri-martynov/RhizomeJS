@@ -5,13 +5,15 @@
     var currentState = null;
     var plant = plantObj || {};
     var eventSink = null;
+    var initial = null; // initial state
 
     this.setPlant = function(value) { plant = value; };
     this.setEventSink = function(value) { eventSink = value; };
 
-    this._setInstance = function(s) {
-        instance = s;
-    };
+    this._setInstance = function(s) { instance = s; };
+    
+    this.setInitial = function (id) { initial = id; };
+    var getInitial = function () { return initial || states[0].id; };
 
     function state(id, stateObj) {
         this.id = id;
@@ -56,36 +58,34 @@
         return null;
     }
 
-    function enter() {
+    function onEntry() {
         if (currentState == null) return;
 
-        var stateEnter = currentState.stateObj.enter;
+        var stateEnter = currentState.stateObj.onEntry;
         if (stateEnter != undefined) stateEnter();
     }
 
-    function exit() {
+    function onExit() {
         if (currentState == null) return;
 
-        var stateExit = currentState.stateObj.exit;
+        var stateExit = currentState.stateObj.onExit;
         if (stateExit != undefined) stateExit();
     }
 
-    this.exit = function() { exit(); };
-    this.enter = function() { enter(); };
+    this.onExit = function() { onExit(); };
+    this.onEntry = function () { onEntry(); };
+
+    this.start = function() {
+        setState(getInitial());
+    };
 
     function setState(id) {
-        exit();
+        onExit();
         currentState = getStateById(id);
-        enter();
+        onEntry();
     }
 
-    this._setState = function(id) {
-        setState(id);
-    };
-
-    this.setInitState = function(id) {
-        currentState = getStateById(id);
-    };
+    this._setState = function(id) { setState(id); };
 
     this.getState = function() {
         return currentState == null ? null : currentState.stateObj;

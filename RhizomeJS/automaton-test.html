@@ -8,7 +8,7 @@
         <script>
 
             var state1 = new State();
-            state1.enter = function() { console.log("s1: enter"); };
+            state1.onEntry = function() { console.log("s1: enter"); };
             state1.work = function() {
                 console.log("s1: working on the " + this.getPlant().name);
                 this.getEventSink().castEvent("e1", "data1");
@@ -16,7 +16,7 @@
 
 
             var state2 = new State();
-            state2.exit = function() { console.log("s2: exit"); };
+            state2.onExit = function() { console.log("s2: exit"); };
             state2.work = function() {
                 console.log("s2: working on the " + this.getPlant().name);
                 this.getEventSink().castEvent("e2");
@@ -35,12 +35,12 @@
                 this.addEdge("s1", "e1", Conditions.Random({ state: "s2", prob: 25 }, { state: "s2", prob: 75 }));
                 this.addEdge("s2", "e2", StackAutomaton.PrevState);
 
-                this.setInitState("s1");
+//                this.setInitial("s1");
             }
 
             var plant = { name: "Plant" };
             var automaton = new TestAutomaton(plant);
-            automaton.enter();
+            automaton.start();
 
             automaton.work();
             automaton.work();

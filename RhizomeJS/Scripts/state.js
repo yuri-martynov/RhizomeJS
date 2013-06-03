@@ -14,7 +14,7 @@
         }
     };
 
-    this.enter = function(ctx) {
+    this.onEntry = function(ctx) {
         ctx = ctx || {};
         ctx.eventSink = this.getEventSink();
         ctx.plant = this.getPlant();
@@ -25,16 +25,16 @@
         }
 
         for (var j = 0; j < rules.length; j++) {
-            var enter = rules[j].enter;
+            var enter = rules[j].onEntry;
             if (enter != undefined) enter();
         }
 
     }.bind(this);
 
-    this.exit = function() {
+    this.onExit = function() {
 
         for (var i = 0; i < rules.length; i++) {
-            var exit = rules[i].exit;
+            var exit = rules[i].onExit;
             if (exit != undefined) exit();
         }
 
@@ -72,15 +72,15 @@ function ActiveState() {
 
     var ctx = new context();
 
-    var baseEnter = this.enter;
-    this.enter = function() {
+    var baseEnter = this.onEntry;
+    this.onEntry = function() {
         baseEnter(ctx);
 
         ctx.run();
     };
 
-    var baseExit = this.exit;
-    this.exit = function() {
+    var baseExit = this.onExit;
+    this.onExit = function() {
         ctx.stop();
 
         baseExit();
