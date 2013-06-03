@@ -10,10 +10,10 @@
     this.setEventSink = function(value) { eventSink = value; };
 
     this._setInstance = function(s) { instance = s; };
-    
-    this.setInitial = function (id) { initial = id; };
 
-    var getInitial = function () {
+    this.setInitial = function(id) { initial = id; };
+
+    var getInitial = function() {
         if (initial) return initial;
         for (var s in states) return s;
         return null;
@@ -38,23 +38,27 @@
 
     function edge() {
 
-        var eventTransitions = {};
-        this.addTransition = function (event, t) {
-            if (eventTransitions[event] == undefined)
-                eventTransitions[event] = [];
+        var transitionsByEvents = {};
 
-            eventTransitions[event].push(t);
+        this.addTransition = function(event, t) {
+            if (transitionsByEvents[event] == undefined)
+                transitionsByEvents[event] = [];
+
+            transitionsByEvents[event].push(t);
         };
 
-        this.getTargetState = function (event, data) {
-            var transitionsForEvent = eventTransitions[event];
-            if (transitionsForEvent == undefined)
-                return null;
-            
-            for (var i = 0; i < transitionsForEvent.length; i++) {
-                var target = transitionsForEvent[i].getTargetState(data);
-                if (target != null) return target;
+        this.getTargetState = function(event, data) {
+            for (var e in transitionsByEvents) {
+                if (e == event || e == Automaton.AnyEvent) {
+                    var transitionsForEvent = transitionsByEvents[e];
+
+                    for (var i = 0; i < transitionsForEvent.length; i++) {
+                        var target = transitionsForEvent[i].getTargetState(data);
+                        if (target != null) return target;
+                    }
+                }
             }
+
             return null;
         };
     }
@@ -76,7 +80,7 @@
     }
 
     this.onExit = function() { onExit(); };
-    this.onEntry = function () { onEntry(); };
+    this.onEntry = function() { onEntry(); };
 
     this.start = function() { setState(getInitial()); };
 
@@ -146,16 +150,18 @@
             : new transition(targetOrDelegate);
     };
 
-    this.addEdge = function(sourceState, event, targetState) {
-        var e = findEdgeBySourceState(sourceState);
+    this.addEdge = function(source, event, targetOrDelegate) {
+        var e = findEdgeBySourceState(source);
         if (e == null) {
             e = new edge();
-            states[sourceState].edge = e;
+            states[source].edge = e;
         }
-        var t = instance._transitionFactory(targetState);
+        var t = instance._transitionFactory(targetOrDelegate);
         e.addTransition(event, t);
     };
 }
+
+Automaton.AnyEvent = "Automaton.AnyEvent";
 
 function StackAutomaton() {
 
@@ -165,12 +171,12 @@ function StackAutomaton() {
 
     var prevStates = [];
 
-    this._setState = function (id) {
-        
+    this._setState = function(id) {
+
         if (id == StackAutomaton.PrevState) {
             var lastIndex = prevStates.length - 1;
             id = prevStates[lastIndex];
-            prevStates.splice(lastIndex, 1); 
+            prevStates.splice(lastIndex, 1);
         } else {
             var currentStateId = this.getStateId();
             if (currentStateId != null)
@@ -201,15 +207,15 @@ function StackAutomaton() {
     };
 }
 
-StackAutomaton.PrevState = "StackAutomaton.PrevState." + new Date().getTime();
+StackAutomaton.PrevState = "StackAutomaton.PrevState";
 
 function State() {
     var eventSink = null;
     var plant = null;
 
-    this.setEventSink = function (value) { eventSink = value; };
-    this.getEventSink = function () { return eventSink; };
+    this.setEventSink = function(value) { eventSink = value; };
+    this.getEventSink = function() { return eventSink; };
 
-    this.setPlant = function (value) { plant = value; };
-    this.getPlant = function () { return plant; };
+    this.setPlant = function(value) { plant = value; };
+    this.getPlant = function() { return plant; };
 }
