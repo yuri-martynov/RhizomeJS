@@ -1,4 +1,4 @@
-﻿function CompositeState() {
+﻿function CompoundState() {
     State.apply(this, arguments);
 
     var rulesFactories = [];
@@ -44,7 +44,7 @@
 }
 
 function ActiveState() {
-    CompositeState.apply(this, arguments);
+    CompoundState.apply(this, arguments);
     
     var context = function() {
         var activeObjectHost = null;
