@@ -38,22 +38,22 @@
 
     function edge() {
 
-        var transitionsByEvents = {};
+        var events = {};
 
         this.addTransition = function(event, t) {
-            if (transitionsByEvents[event] == undefined)
-                transitionsByEvents[event] = [];
+            if (events[event] == undefined)
+                events[event] = [];
 
-            transitionsByEvents[event].push(t);
+            events[event].push(t);
         };
 
         this.getTargetState = function(event, data) {
-            for (var e in transitionsByEvents) {
+            for (var e in events) {
                 if (e == event || e == Automaton.AnyEvent) {
-                    var transitionsForEvent = transitionsByEvents[e];
+                    var transitions = events[e];
 
-                    for (var i = 0; i < transitionsForEvent.length; i++) {
-                        var target = transitionsForEvent[i].getTargetState(data);
+                    for (var i = 0; i < transitions.length; i++) {
+                        var target = transitions[i].getTargetState(data);
                         if (target != null) return target;
                     }
                 }
