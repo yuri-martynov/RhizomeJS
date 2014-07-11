@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+
+    <script src="scripts/angular.js"></script>
+
+    <script src="Rhizome/automaton.js"></script>
+    <script src="Rhizome/state.js"></script>
+    <script src="Rhizome/active-object.js"></script>
+    <script src="Rhizome/conditions.js"></script>
+
+    <script src="Rhizome/rhizome.angular.js"></script>
+
+    <script src="app/demo.js"></script>
+
+</head>
+<body ng-app="app" ng-controller="DemoCtrl as vm">
+    <rh-automaton plant="vm.plant">
+        
+        <rh-state id="s1">
+            <rh-rule factory="vm.rule1Factory" />
+            <rh-rule factory="vm.rule1Factory" />
+        </rh-state>
+
+        <rh-state id="s2">
+            <rh-rule factory="vm.rule2Factory" />
+            <rh-rule factory="vm.rule2Factory" />
+        </rh-state>
+        
+        <rh-edge source="s1" event="e1" target="s2" />
+        <rh-edge source="s2" event="e2" target="s1" />
+
+    </rh-automaton>
+</body>
+</html>

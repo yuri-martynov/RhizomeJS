@@ -1,7 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RhizomeJS", "RhizomeJS\RhizomeJS.csproj", "{3E5C0809-8BC5-4778-BA22-A09BF1E7BC0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RhizomeJS.AngularJS", "RhizomeJS.AngularJS\RhizomeJS.AngularJS.csproj", "{109FAC2F-CF17-4D6E-81D7-6F834B21A921}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +17,10 @@ Global
 		{3E5C0809-8BC5-4778-BA22-A09BF1E7BC0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E5C0809-8BC5-4778-BA22-A09BF1E7BC0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E5C0809-8BC5-4778-BA22-A09BF1E7BC0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{109FAC2F-CF17-4D6E-81D7-6F834B21A921}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{109FAC2F-CF17-4D6E-81D7-6F834B21A921}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{109FAC2F-CF17-4D6E-81D7-6F834B21A921}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{109FAC2F-CF17-4D6E-81D7-6F834B21A921}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
