@@ -7,6 +7,9 @@
     module.directive('rhState', rhState);
     module.directive('rhRule', rhRule);
     module.directive('rhEdge', rhEdge);
+    module.directive('rhEdges', rhEdges);
+    module.directive('rhEvent', rhEvent);
+
 
     var transcludeTemplate = '<div ng-transclude></div>';
 
@@ -83,8 +86,6 @@
         var directive = {
             restrict: 'E',
             require: '^rhState',
-//            transclude: true,
-//            template: transcludeTemplate,
 
             link: link,
             scope: {
@@ -98,6 +99,38 @@
         }
     };
 
+    function rhEdges() {
+        // Usage:
+        // 
+        // Creates:
+        // 
+        var directive = {
+            restrict: 'E',
+            require: '^rhAutomaton',
+            transclude: true,
+            template: transcludeTemplate,
+
+            controller: controller,
+            link: { pre: preLink },
+            scope: {
+                source: '@'
+            }
+        };
+        return directive;
+
+        function preLink(scope, element, attrs, rhAutomatonCtrl) {
+            scope.automaton = rhAutomatonCtrl;
+        }
+
+        function controller($scope) {
+
+            this.addEdge = function(event, delegateOrTarget) {
+                $scope.automaton.addEdge($scope.source, event, delegateOrTarget);
+            }
+
+        }
+    };
+
     function rhEdge() {
         // Usage:
         // 
@@ -106,8 +139,6 @@
         var directive = {
             restrict: 'E',
             require: '^rhAutomaton',
-//            transclude: true,
-//            template: transcludeTemplate,
 
             link: link,
             scope: {
@@ -121,6 +152,29 @@
 
         function link(scope, element, attrs, rhAutomatonCtrl) {
             rhAutomatonCtrl.addEdge(scope.source, scope.event, scope.target || scope.delegate());
+        }
+    };
+
+    function rhEvent() {
+        // Usage:
+        // 
+        // Creates:
+        // 
+        var directive = {
+            restrict: 'E',
+            require: '^rhEdges',
+
+            link: link,
+            scope: {
+                event: '@',
+                target: '@',
+                delegate: '&'
+            }
+        };
+        return directive;
+
+        function link(scope, element, attrs, rhEdgesCtrl) {
+            rhEdgesCtrl.addEdge(scope.event, scope.target || scope.delegate());
         }
     }
 

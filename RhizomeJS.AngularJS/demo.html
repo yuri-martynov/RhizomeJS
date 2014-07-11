@@ -15,22 +15,27 @@
     <script src="app/demo.js"></script>
 
 </head>
-<body ng-app="app" ng-controller="DemoCtrl as vm">
-    <rh-automaton plant="vm.plant">
+    <body ng-app="app" ng-controller="DemoCtrl as vm">
         
-        <rh-state id="s1">
-            <rh-rule factory="vm.rule1Factory" />
-            <rh-rule factory="vm.rule1Factory" />
-        </rh-state>
-
-        <rh-state id="s2">
-            <rh-rule factory="vm.rule2Factory" />
-            <rh-rule factory="vm.rule2Factory" />
-        </rh-state>
+        <rh-automaton plant="vm.plant">
         
-        <rh-edge source="s1" event="e1" target="s2" />
-        <rh-edge source="s2" event="e2" target="s1" />
+            <rh-state id="s1">
+                <rh-rule factory="vm.rule1Factory" />
+                <rh-rule factory="vm.rule1Factory" />
+            </rh-state>
 
-    </rh-automaton>
-</body>
+            <rh-state id="s2">
+                <rh-rule factory="vm.rule2Factory" />
+                <rh-rule factory="vm.rule2Factory" />
+            </rh-state>
+            
+            <rh-edges source="s1">
+                <rh-event event="e1" target="s2" />
+            </rh-edges>
+        
+            <rh-edge source="s2" event="e2" target="s1" />
+
+        </rh-automaton>
+
+    </body>
 </html>
